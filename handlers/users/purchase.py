@@ -1,43 +1,44 @@
 import logging
+from datetime import datetime
 
 from aiogram import types
 from aiogram.dispatcher.filters import Command
 from aiogram.types import CallbackQuery
 
-from keyboards.inline.callback_dates import buy_callback
-from keyboards.inline.choice_buttons import choice, item_keyboard, item2_keyboard
+from keyboards.inline.callback_dates import currency_callback
+from keyboards.inline.choice_buttons import choice, usd_keyboard, eur_keyboard
 from loader import dp
 
 
-@dp.message_handler(Command('items'))
-async def show_items(message: types.Message):
-    await message.answer(text='There are 2 items. '
-                              'Press Cancel if you don\'t need anything',
+@dp.message_handler(Command('exchange'))
+async def show_exchange(message: types.Message):
+    await message.answer(text='There are 2 types of currency. '
+                              'Press Cancel to exit from inline menu.',
                          reply_markup=choice)
 
 
-@dp.callback_query_handler(buy_callback.filter(item_name='item'))
-async def buying_item(call: CallbackQuery, callback_data: dict):
+@dp.callback_query_handler(currency_callback.filter(item_name='dollar'))
+async def exchange_rate_dollar(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=60)
     logging.info(f'callback_data={call.data}')
     logging.info(f'callback_data dict={callback_data}')
-    quantity = callback_data.get('quantity')
-    await call.message.answer(f'You have chosen item. There are {quantity} items',
-                              reply_markup=item_keyboard)
+    await call.message.answer(f'You have chosen USD. '
+                              f'Current datetime {datetime.now().strftime("%d-%m-%Y, %H:%M:%S")}',
+                              reply_markup=usd_keyboard)
 
 
-@dp.callback_query_handler(buy_callback.filter(item_name='item2'))
-async def buying_item2(call: CallbackQuery, callback_data: dict):
+@dp.callback_query_handler(currency_callback.filter(item_name='euro'))
+async def exchange_rate_euro(call: CallbackQuery, callback_data: dict):
     await call.answer(cache_time=60)
     logging.info(f'callback_data={call.data}')
     logging.info(f'callback_data dict={callback_data}')
-    quantity = callback_data.get('quantity')
-    await call.message.answer(f'You have chosen item2. There are {quantity} items',
-                              reply_markup=item2_keyboard)
+    await call.message.answer(f'You have chosen EUR. '
+                              f'Current datetime {datetime.now().strftime("%d-%m-%Y, %H:%M:%S")}',
+                              reply_markup=eur_keyboard)
 
 
 @dp.callback_query_handler(text='cancel')
 async def cancel(call: CallbackQuery):
-    await call.answer('You have canceled your purchase.',
+    await call.answer('You closed inline menu.',
                       show_alert=True)
     await call.message.edit_reply_markup()

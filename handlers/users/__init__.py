@@ -1,6 +1,5 @@
-# from .help import dp
+from .help import dp
 from .start import dp
-# from .echo import dp
 from .menu import dp
 from .purchase import dp
 
