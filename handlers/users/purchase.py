@@ -34,3 +34,10 @@ async def buying_item2(call: CallbackQuery, callback_data: dict):
     quantity = callback_data.get('quantity')
     await call.message.answer(f'You have chosen item2. There are {quantity} items',
                               reply_markup=item2_keyboard)
+
+
+@dp.callback_query_handler(text='cancel')
+async def cancel(call: CallbackQuery):
+    await call.answer('You have canceled your purchase.',
+                      show_alert=True)
+    await call.message.edit_reply_markup()
