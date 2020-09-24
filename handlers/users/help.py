@@ -12,6 +12,7 @@ async def bot_help(message: types.Message):
         'Список команд: ',
         '/start - Начать диалог',
         '/help - Получить справку',
-        '/exchange - Узнать курс валют'
+        '/exchange - Узнать курс валют',
+        'Чтобы узнать погоду, введите имя города.'
     ]
     await message.answer('\n'.join(text))
